@@ -2,8 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
-from uuslug import uuslug
-
 
 @python_2_unicode_compatible
 class Event(models.Model):
@@ -12,12 +10,6 @@ class Event(models.Model):
     Mozillians can apply to attend these events.
     """
     name = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True, max_length=255)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.slug = uuslug(self.name, instance=self)
-        super(Event, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -78,7 +70,6 @@ class MozillianGroup(models.Model):
 @python_2_unicode_compatible
 class MozillianProfile(models.Model):
     """Mozillians User Profile"""
-    slug = models.SlugField(blank=True, max_length=100)
     full_name = models.CharField(max_length=255)
     email = models.EmailField(default='')
     city = models.CharField(max_length=50, default='', blank=True)
@@ -98,11 +89,6 @@ class MozillianProfile(models.Model):
 
     class Meta:
         ordering = ['country', 'full_name']
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.slug = uuslug(self.full_name, instance=self)
-        super(MozillianProfile, self).save(*args, **kwargs)
 
     def get_next_entry(self, qs=None):
         if not qs:
@@ -150,4 +136,4 @@ class Vote(models.Model):
                                                    (-1, 'No')))
 
     def __unicode__(self):
-        return u'%s %s' % (self.voter, self.nominee.slug)
+        return u'%s %s' % (self.voter, self.nominee)

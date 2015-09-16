@@ -6,7 +6,6 @@ from django.forms import ValidationError
 
 from import_export.admin import ExportMixin, ImportExportMixin
 from import_export import fields, resources
-from uuslug import uuslug
 
 from woodstock.voting.models import (Application, Event, PreferredEvent,
                                      MozillianGroup, MozillianProfile, Vote)
@@ -185,7 +184,6 @@ class MozillianGroupResouce(resources.ModelResource):
         entry_id = row['entry_id']
         application, _ = Application.objects.get_or_create(entry_id=entry_id)
         instance.application = application
-        instance.slug = uuslug(instance.full_name, instance)
         return (instance, created)
 
     def skip_row(self, instance, original):
